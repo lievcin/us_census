@@ -7,23 +7,23 @@ def process_df(interim_dir):
 	df_train['set']='train'
 	df_test = pd.read_csv(interim_dir+'/census_income_test.csv')
 	df_test['set']='test'
-	df = pd.concat([df_train, df_test], ignore_index=True, sort=True)
+	df = pd.concat([df_train, df_test], ignore_index=True)
 	df = df.apply(lambda x: x.str.strip() if x.dtype == "object" else x)
 
-	bins = range(0, df['weeks worked in year'].max()+10, 10)
-	df['weeks worked in year'] = pd.cut(df['weeks worked in year'], bins=bins, include_lowest=True)
+	# bins = range(0, df['weeks worked in year'].max()+10, 10)
+	# df['weeks worked in year'] = pd.cut(df['weeks worked in year'], bins=bins, include_lowest=True)
 
-	bins = range(0, df['capital gains'].max()+5000, 5000)
-	df['capital gains'] = pd.cut(df['capital gains'], bins=bins, include_lowest=True)
+	# bins = range(0, df['capital gains'].max()+5000, 5000)
+	# df['capital gains'] = pd.cut(df['capital gains'], bins=bins, include_lowest=True)
 
-	bins = range(0, df['capital losses'].max()+500, 500)
-	df['capital losses'] = pd.cut(df['capital losses'], bins=bins, include_lowest=True)
+	# bins = range(0, df['capital losses'].max()+500, 500)
+	# df['capital losses'] = pd.cut(df['capital losses'], bins=bins, include_lowest=True)
 
-	bins = range(0, df['dividends from stocks'].max()+5000, 5000)
-	df['dividends from stocks'] = pd.cut(df['dividends from stocks'], bins=bins, include_lowest=True)
+	# bins = range(0, df['dividends from stocks'].max()+5000, 5000)
+	# df['dividends from stocks'] = pd.cut(df['dividends from stocks'], bins=bins, include_lowest=True)
 
-	bins = range(0, df['wage per hour'].max()+10, 10)
-	df['wage per hour'] = pd.cut(df['wage per hour'], bins=bins, include_lowest=True)
+	# bins = range(0, df['wage per hour'].max()+10, 10)
+	# df['wage per hour'] = pd.cut(df['wage per hour'], bins=bins, include_lowest=True)
 
 	df["fill inc questionnaire for veteran's admin"].replace('Not in universe', 'No', inplace=True)
 	df['family members under 18'].replace('Not in universe', 'Unknown', inplace=True)
@@ -77,8 +77,8 @@ def process_df(interim_dir):
 	df.loc[((df['full or part time employment stat']=='Children or Armed Forces') & (df['age']<=18)), 'full or part time employment stat'] = 'Child'
 	df['full or part time employment stat'].replace('Children or Armed Forces', 'Armed Forces', inplace=True)
 
-	bins = range(0, df['age'].max()+5, 5)
-	df['age'] = pd.cut(df['age'], bins=bins, include_lowest=True)
+	# bins = range(0, df['age'].max()+5, 5)
+	# df['age'] = pd.cut(df['age'], bins=bins, include_lowest=True)
 
 	df['member of a labor union'].replace('Not in universe', 'No', inplace=True)
 
@@ -166,6 +166,8 @@ def process_df(interim_dir):
 	df.loc[df['country of birth father'].isin(europe), 'country of birth father'] = 'Europe'
 	df.loc[df['country of birth father'].isin(asia), 'country of birth father'] = 'Asia'
 	df.loc[df['country of birth father']=='Outlying-U S (Guam USVI etc)', 'country of birth father'] = 'United-States'
+
+	df['salary'] = df['salary'].apply(lambda x: 1 if x=='50000+.' else 0)
 
 	df_train = df[df['set']=='train']
 	df_test = df[df['set']=='test']
