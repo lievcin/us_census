@@ -27,6 +27,9 @@ cont_columns = ['age', 'wage per hour', 'capital gains', 'capital losses', 'divi
                 'num persons worked for employer', 'weeks worked in year']
 nominal_columns = [col for col in columns if col not in cont_columns]
 
+def columns_types():
+	return cont_columns, nominal_columns
+
 def categorise_column(df, column_name):
 	df[column_name] = df[column_name].astype('category')
 	return df
@@ -57,7 +60,6 @@ def summarise_column(df, column_name, **kwargs):
 
 	else:
 
-		# plt.figure(figsize=(10,8))
 		df[column_name].value_counts().sort_values(ascending=True).tail(15).plot.barh(color='b')
 		plt.ylabel(column_name.title(), fontsize=12)
 		plt.xlabel('Number of people', fontsize=12)
@@ -65,10 +67,5 @@ def summarise_column(df, column_name, **kwargs):
 		ax = plt.gca()
 		ax.yaxis.grid(False)
 		ax.get_xaxis().set_major_formatter(mpl.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
-
-		# sns.barplot(x=class_count.values,y=class_count.index, color="b")
-
-		# plt.ylabel('detailed industry recode'.title(), fontsize=12)
-		# plt.xlabel('Number of people', fontsize=12)
 
 	plt.show()

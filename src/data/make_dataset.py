@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import os
+import shutil
 import logging
 import zipfile
 import pandas as pd
 from dotenv import find_dotenv, load_dotenv
+from process import process_df
 
 def get_directories():
     root_dir = os.path.dirname(os.path.abspath(__file__)).split('/')[:-2]
@@ -56,11 +58,18 @@ def main():
     # Process and remove column from training and test sets
     df = pd.read_csv(interim_dir + '/us_census_full/census_income_learn.csv', names=columns)
     df = df.drop(columns=['instance weight'])
-    df.to_csv(processed_dir + '/census_income_learn.csv', index=False)
+    df.to_csv(interim_dir + '/census_income_learn.csv', index=False)
 
     df = pd.read_csv(interim_dir + '/us_census_full/census_income_test.csv', names=columns)
     df = df.drop(columns=['instance weight'])
-    df.to_csv(processed_dir + '/census_income_test.csv', index=False)
+    df.to_csv(interim_dir + '/census_income_test.csv', index=False)
+
+    shutil.rmtree(os.path.join(interim_dir, 'us_census_full'))
+
+    df_train, df_test = process_df(interim_dir)
+    df_train.to_csv(processed_dir + '/census_income_learn.csv', index=False)
+    df_test.to_csv(processed_dir + '/census_income_test.csv', index=False)
+
 
 
 if __name__ == '__main__':
