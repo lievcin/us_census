@@ -67,15 +67,13 @@ def process_df(interim_dir):
 	df['state of previous residence'].replace('?', 'Unknown', inplace=True)
 	df['region of previous residence'].replace('Not in universe', 'Unknown', inplace=True)
 
-	# Want to group all these different types into cleaner categories. Also splitting armed forces and kids
+	# Want to group all these different types into cleaner categories.
 	df['full or part time employment stat'].replace('PT for econ reasons usually FT', 'Part-time', inplace=True)
 	df['full or part time employment stat'].replace('PT for econ reasons usually PT', 'Part-time', inplace=True)
 	df['full or part time employment stat'].replace('PT for non-econ reasons usually FT', 'Part-time', inplace=True)
 	df['full or part time employment stat'].replace('Unemployed full-time', 'Unemployed', inplace=True)
 	df['full or part time employment stat'].replace('Unemployed part- time', 'Unemployed', inplace=True)
 	df['full or part time employment stat'].replace('Full-time schedules', 'Full-time', inplace=True)
-	df.loc[((df['full or part time employment stat']=='Children or Armed Forces') & (df['age']<=18)), 'full or part time employment stat'] = 'Child'
-	df['full or part time employment stat'].replace('Children or Armed Forces', 'Armed Forces', inplace=True)
 
 	# bins = range(0, df['age'].max()+5, 5)
 	# df['age'] = pd.cut(df['age'], bins=bins, include_lowest=True)

@@ -67,8 +67,8 @@ def main():
     shutil.rmtree(os.path.join(interim_dir, 'us_census_full'))
 
     df_train, df_test = process_df(interim_dir)
-    df_train.to_csv(processed_dir + '/census_income_learn.csv', index=False)
-    df_test.to_csv(processed_dir + '/census_income_test.csv', index=False)
+    df_train.to_csv(interim_dir + '/preprocessed_train.csv', index=False)
+    df_test.to_csv(interim_dir + '/preprocessed_test.csv', index=False)
 
 
 
