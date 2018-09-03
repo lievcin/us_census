@@ -5,6 +5,8 @@ import matplotlib as mpl
 import matplotlib.ticker as ticker
 from matplotlib import rc
 import seaborn as sns
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
 
 rc('font',**{'family':'serif','serif':['Palatino']})
 plt.style.use('seaborn-whitegrid')
@@ -30,8 +32,15 @@ nominal_columns = [col for col in columns if col not in cont_columns]
 def columns_types():
 	return cont_columns, nominal_columns
 
-def categorise_column(df, column_name):
-	df[column_name] = df[column_name].astype('category')
+def one_hot_df(df, excl_columns=[]):
+	columns = [c for c in df.columns if c not in excl_columns]
+
+	for column in columns: # Except salary and set
+	    if column not in cont_columns:
+	        # Factorize the values
+	        labels,levels = pd.factorize(df[column])
+	        # Save the encoded variables
+	        df[column] = labels
 	return df
 
 def summarise_column(df, column_name, **kwargs):
@@ -69,3 +78,11 @@ def summarise_column(df, column_name, **kwargs):
 		ax.get_xaxis().set_major_formatter(mpl.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
 
 	plt.show()
+
+def class_report(y_true, y_pred, dataset):
+    print(dataset + ' Set:\n')
+    print(dataset + ' Confusion Matrix:')
+    print(confusion_matrix(y_true, y_pred))
+    print(dataset + ' Classification report:')
+    print(classification_report(y_true, y_pred))
+    print(dataset + ' Accuracy: {}'.format(accuracy_score(y_true, y_pred)))
