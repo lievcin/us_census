@@ -12,7 +12,7 @@ rc('font',**{'family':'serif','serif':['Palatino']})
 plt.style.use('seaborn-whitegrid')
 
 
-columns = ['age','class of worker','detailed industry recode','detailed occupation recode','education',
+COLUMNS = ['age','class of worker','detailed industry recode','detailed occupation recode','education',
            'wage per hour','enroll in edu inst last wk','marital stat','major industry code',
            'major occupation code','race','hispanic origin','sex','member of a labor union',
            'reason for unemployment','full or part time employment stat','capital gains','capital losses',
@@ -25,23 +25,25 @@ columns = ['age','class of worker','detailed industry recode','detailed occupati
            "fill inc questionnaire for veteran's admin",'veterans benefits','weeks worked in year','year',
            'salary']
 
-cont_columns = ['age', 'wage per hour', 'capital gains', 'capital losses', 'dividends from stocks',
+CONT_COLUMNS = ['age', 'wage per hour', 'capital gains', 'capital losses', 'dividends from stocks',
                 'num persons worked for employer', 'weeks worked in year']
-nominal_columns = [col for col in columns if col not in cont_columns]
+NOM_COLUMNS = [col for col in COLUMNS if col not in CONT_COLUMNS]
 
-def columns_types():
+def columns_types(**kwargs):
+	if 'df' in kwargs:
+		nominal_columns = [col for col in kwargs['df'].columns if col not in CONT_COLUMNS]
+		cont_columns    = [col for col in kwargs['df'].columns if col in CONT_COLUMNS]
+	else:
+		nominal_columns = NOM_COLUMNS
+		cont_columns    = CONT_COLUMNS
+
 	return cont_columns, nominal_columns
 
-def one_hot_df(df, excl_columns=[]):
-	columns = [c for c in df.columns if c not in excl_columns]
-
-	for column in columns: # Except salary and set
-	    if column not in cont_columns:
-	        # Factorize the values
-	        labels,levels = pd.factorize(df[column])
-	        # Save the encoded variables
-	        df[column] = labels
-	return df
+def one_hot(df, excl_columns=[]):
+    df = df.drop(excl_columns, axis=1, inplace=False, errors='ignore')
+    cont_columns, nominal_columns = columns_types(df=df)
+    df_category_onehot = pd.get_dummies(df[nominal_columns])
+    return df_category_onehot
 
 def summarise_column(df, column_name, **kwargs):
 
