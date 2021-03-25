@@ -68,7 +68,7 @@ PySocks==1.6.8
 python-dateutil==2.7.3
 python-dotenv==0.9.1
 pytz==2018.5
-PyYAML==3.13
+PyYAML==5.4
 pyzmq==17.1.2
 quilted==0.1
 requests==2.19.1
